@@ -1,18 +1,21 @@
 import os
-import pickle
+import joblib
 import pandas as pd
 import random
-import sklearn
+import scorecardpy as sc
+from credit_scorecard import card_path
 
 random.seed(3)
 
-def predict(X_test):
-    model_filename = os.path.join('model.dat')
-    model = pickle.load(open(model_filename, 'rb'))
-    Species_class_map = {0: 'Iris-setosa', 1: }
+card = pd.read_pickle(card_path)
+
+model_filename = os.path.join('model.dat')
+model = joblib.load(model_filename)
+
+def predict(X_test, card):
 
     y_pred = model.predict(X_test)
-    y_pred = [round(value) for value in y_pred]
-    prediction_result = ['Species': Species_class_map[y_pred[0]]]
-    return prediction_result
+    y_proba = model.predict_proba(X_test)
+    score = sc.scorecard_ply(X_test, card, only_total_score=True, print_step=0, replace_blank_na=True, var_kp = None)
+    return y_pred, score
 
