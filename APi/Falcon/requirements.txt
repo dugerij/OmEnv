@@ -1,0 +1,27 @@
+cycler==0.11.0
+falcon==3.1.0
+fonttools==4.33.3
+gunicorn==20.1.0
+joblib==1.1.0
+kiwisolver==1.4.2
+matplotlib==3.5.1
+numpy==1.22.3
+packaging==21.3
+pandas==1.4.2
+patsy==0.5.2
+Pillow==9.1.0
+pyparsing==3.0.8
+python-dateutil==2.8.2
+pytz==2022.1
+scikit-learn==1.0.2
+scipy==1.8.0
+scorecardpy @ git+https://github.com/dugerij/scorecardpy.git@374dd845037b9bb0343a64a04db0b072e39c69a4
+six==1.16.0
+skorch==0.11.0
+statsmodels==0.13.2
+tabulate==0.8.9
+threadpoolctl==3.1.0
+torch==1.11.0
+tqdm==4.64.0
+typing_extensions==4.2.0
+xgboost==1.6.0
