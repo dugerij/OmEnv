@@ -1,7 +1,23 @@
+#!/usr/bin/env
+
 import json
+import falcon
 import numpy as np
 import pandas as pd
-# from predict import predict
+import random
+import scorecardpy as sc
+
+import torch
+import skorch
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+import xgboost as xgb
+# import lightgbm
+# from lightgbm import LGBMClassifier
+
+random.seed(3)
+
+
 X_test = {'customerId': 202109203271, 'personalDetails.typeOfID': 'PVC', 'personalDetails.gender': 'male', 'personalDetails.religion': 'Islam', 'personalDetails.maritalStatus': 'Married', 'personalDetails.numberOfChildren': 2.0, 'business.dailyIncome': '11000', 'business.type': 'Transport', 'business.weeklyMarketAttendance': 6.0, 'business.yearsInBusiness': 6.0, 'guarantor.typeOfID': 'PVC', 'guarantor.gender': 'male', 'guarantor.religion': 'Islam', 'guarantor.business.monthlyIncome': '50000-200000', 'guarantor.business.type': 'AUTOMOBILE MECHANIC', 'guarantor.business.yearsInBusiness': 6.0, 'Dibursement Date': '2021-10-06T16:20:07.611Z', 'Disbursed Amount': 210000.0, 'Repayment Start Date': '2021-10-11T16:20:06.178Z', 'Repayment End Date': '2021-11-02T16:20:06.178Z', 'Loan Balance': 0.0}
 
 def process_event(raw_json):
@@ -74,4 +90,39 @@ def process_event(raw_json):
 
     return X_test
 
-process_event(X_test)
+
+# input_dict = json.loads(raw_json.decode())       
+X = X_test.copy()
+data = process_event(X)
+
+class PredictResource(object):
+
+    def __init__(self, model):
+        self.model = model
+
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_200
+        resp.body = 'Hello World!'
+
+    def on_post(self, req, resp):
+        predicted_data = self.model.predict(data)
+
+        output = {'prediction': str(predicted_data)}
+        resp.status = falcon.HTTP_201
+        resp.body = json.dumps(output, ensure_ascii=False)
+
+class GenerateCreditScore(object):
+    def __init__(self, card):
+        self.card = card
+
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_200
+        resp.body = 'Hi'
+
+    def on_post(self, req, resp):
+        score = sc.scorecard_ply(X_test, self.card, only_total_score=True, print_step=0, replace_blank_na=True, var_kp = None)
+        output = {'Credit score': str(score)}
+
+        resp.status = falcon.HTTP_201
+        resp.body = json.dumps(output, ensure_ascii=False)
+        resp.location = '/creditscore/score'
