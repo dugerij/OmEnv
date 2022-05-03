@@ -9,7 +9,7 @@ class ObjRequestClass:
             print('json from client is validated')
             return True
 
-        except ValueError, e:
+        except ValueError:
             self.__json_content = {}
             print('Json from client is not validated')
             return False
@@ -24,11 +24,14 @@ class ObjRequestClass:
         }
 
         if (validated==True):
+            if 'name' in self.__json_content:
+                output['msg'] = 'Hello {name}'.format(name=self.__json_content ['name'])
+            else:
+                output['status'] = 404
+                output['msg'] = 'Json input need name'
 
-            output['msg'] = 'Hello {name}'.format(name=self.__json_content['name'])
-    
         else:
-            output['status'] = 404
+            output['status'] =  404
             output['msg'] = 'Json input is not validated'
 
 
