@@ -1,10 +1,10 @@
 import requests
 
-url = 'https://api.github.com/invalmid'
+url = 'https://api.github.com/'
 
 response = requests.get(url)
 
-if response.status_code == 200:
+if response:
     print('Success!')
-elif response.status_code == 404:
-    print('Not found.')
+else:
+    print('Not found. An Error occured')
