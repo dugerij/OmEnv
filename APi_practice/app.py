@@ -1,10 +1,17 @@
 import requests
+from requests.exceptions import HTTPError
 
-url = 'https://api.github.com/'
+for url in ['https://api.github.com/', 'https://api.github.com/invalid']:
+    try:
+        response = requests.get(url)
 
-response = requests.get(url)
+        response.raise_for_status()
 
-if response:
-    print('Success!')
-else:
-    print('Not found. An Error occured')
+    except HTTPError as http_err:
+        print(f'HTTP error occured: {http_err}')
+
+    except Exception as err:
+        print(f'Other Error occured: {err}')
+    
+    else:
+        print('Success!')
