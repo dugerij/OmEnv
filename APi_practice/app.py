@@ -1,12 +1,10 @@
 import requests
 
-url = "https://api.github.com"
+url = 'https://api.github.com/invalmid'
 
-response = (requests.get(url))
-print(response.status_code)
+response = requests.get(url)
 
-url_invalid = 'https://api.github.com/invalid'
-
-response_2 = requests.get(url_invalid)
-
-print(response_2) 
+if response.status_code == 200:
+    print('Success!')
+elif response.status_code == 400:
+    print('Not found.')
