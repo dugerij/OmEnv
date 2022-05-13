@@ -1,4 +1,4 @@
-
+# import libraries
 import lxml
 import time
 from bs4 import BeautifulSoup
@@ -7,6 +7,7 @@ import requests
 url = "https://www.timesjobs.com/candidate/job-search.html?searchType=personalizedSearch&from=submit&txtKeywords=python&txtLocation= "
 html_text = requests.get(url).text
 
+# define function to scrape jobs
 def find_jobs():
     print('Put some skill you are not familiar with')
     unfamiliar_skill = input('>')
