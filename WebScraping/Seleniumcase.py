@@ -25,14 +25,11 @@ class Rapala:
         self.prefs = prefs or {"profile.managed_default_content_settings.images" : 2}
         self.driver = None
         
-        # /html/body/div[2]/div/div[4]/div/div/div/div/div/div[2]/div/ul[1]/li/div/div/a/h4
+        # fixed error with defined Xpath
         #self.load_more_button_path = "/html/body/div[2]/div/div[4]/div/div/div/div/div/div[2]/p/a"
         self.first_article_path = "/html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[1]/li/div/div/a"
         self.article_path = "/html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[2]/li[{}]/div/div/a"
 
-        # /html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[1]/li
-        # /html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[2]/li[1]
-        # /html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[2]/li[2]
 
         self.sources = ["https://www.voahausa.com/z/2866/?p={}",
                         "https://www.voahausa.com/z/2863/?p={}",
@@ -109,6 +106,7 @@ class Rapala:
         time.sleep(1)"""
         
         # open the article in same window
+        # edited from 'find_element_by_Xpath' as function is now deprecated
         self.driver.find_element(by= By.XPATH, value=article_path).click()
         # collect the article into file & increment articles_collected
         self.__on_article_action()
@@ -143,8 +141,9 @@ class Rapala:
                             self.open_article_and_collect(self.first_article_path)
                             # ensure that the rest of the code does not run 
                             continue
-                        elif k > 2:
+                        elif k >= 2:
                             # scroll the article into view
+                            # edited deprecated 'find_function_by_expert'
                             self.driver.execute_script("arguments[0].scrollIntoView();",
                                                        self.driver.find_element(by=By.XPATH, value=self.article_path.format(k-1)))
                             time.sleep(1)
