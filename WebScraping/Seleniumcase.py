@@ -1,8 +1,16 @@
+
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+# Added
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+
+service = ChromeService(executable_path=ChromeDriverManager().install())
 import time
 
 class Rapala:
@@ -17,10 +25,15 @@ class Rapala:
         self.prefs = prefs or {"profile.managed_default_content_settings.images" : 2}
         self.driver = None
         
+        # /html/body/div[2]/div/div[4]/div/div/div/div/div/div[2]/div/ul[1]/li/div/div/a/h4
         #self.load_more_button_path = "/html/body/div[2]/div/div[4]/div/div/div/div/div/div[2]/p/a"
-        self.first_article_path = "/html/body/div[2]/div/div[4]/div/div/div/div/div/div[2]/div/ul[1]/li/div/div/a/h4"
-        self.article_path = "/html/body/div[2]/div/div[4]/div/div/div/div/div/div[2]/div/ul[2]/li[{}]/div/div/a/h4"
-        
+        self.first_article_path = "/html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[1]/li/div/div/a"
+        self.article_path = "/html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[2]/li[{}]/div/div/a"
+
+        # /html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[1]/li
+        # /html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[2]/li[1]
+        # /html/body/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div/ul[2]/li[2]
+
         self.sources = ["https://www.voahausa.com/z/2866/?p={}",
                         "https://www.voahausa.com/z/2863/?p={}",
                         "https://www.voahausa.com/z/5225/?p={}",
@@ -47,7 +60,7 @@ class Rapala:
         options = Options()
         options.add_experimental_option("prefs", self.prefs)
 
-        driver = webdriver.Chrome(self.chrome_path, options=options)
+        driver = webdriver.Chrome(service=service, options=options)
         # define a generic wait to be used throughout
         driver.wait = WebDriverWait(driver, 5)
 
@@ -96,7 +109,7 @@ class Rapala:
         time.sleep(1)"""
         
         # open the article in same window
-        self.driver.find_element_by_xpath(article_path).click()
+        self.driver.find_element(by= By.XPATH, value=article_path).click()
         # collect the article into file & increment articles_collected
         self.__on_article_action()
 
@@ -133,7 +146,7 @@ class Rapala:
                         elif k > 2:
                             # scroll the article into view
                             self.driver.execute_script("arguments[0].scrollIntoView();",
-                                                       self.driver.find_element_by_xpath(self.article_path.format(k-2)))
+                                                       self.driver.find_element(by=By.XPATH, value=self.article_path.format(k-1)))
                             time.sleep(1)
                         # collect the other articles on the page
                         self.open_article_and_collect(self.article_path.format(k))
